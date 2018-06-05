@@ -1,4 +1,4 @@
-@import "~antd/dist/antd.css";
+@import "./antd.css";
 @import "./style/layout/Footer.scss";
 @import "./style/layout/Navigation.scss";
 @import "./style/layout/Header.scss";
@@ -27,15 +27,4 @@
 
 .ant-card .ant-card-meta .digest {
   word-wrap: break-word;
-}
-
-@font-face {
-  font-family: "anticon";
-  src: url("/font/iconFont/iconfont.eot");
-  /* IE9*/
-  src: url("/font/iconFont/iconfont.woff") format("woff"),
-    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
-  url("/font/iconFont/iconfont.ttf") format("truetype"),
-    /* iOS 4.1- */
-  url("/font/iconFont/iconfont.svg#iconfont") format("svg");
 }
