@@ -1,0 +1,15 @@
+.ant-layout-header.header {
+  flex-direction: row;
+  display: flex;
+  .logo {
+    height: 100%;
+    padding: 0 0 5px 0;
+  }
+  .buttonBar {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-direction: column;
+  }
+}

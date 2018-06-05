@@ -1,9 +1,11 @@
 from flask import Flask, abort, jsonify
+from werkzeug.exceptions import NotFound
+
 
 from app.registry import Registry
 from app.schema import CatalogDetailSchema, RepositoryDetailSchema
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="")
 app.config.from_object("app.config")
 app.config.from_envvar("APP_CONFIG", silent=True)
 registry = Registry(base_url=app.config["REGISTRY_URL"],
@@ -51,15 +53,19 @@ def delete_repository(repository_name: str, digest: str):
 
 @app.after_request
 def after_request(response):
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type,Authorization")
-    response.headers.add("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,OPTIONS")
+    if app.debug:
+        response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
 
 @app.route("/")
 def index():
     return app.send_static_file("index.html")
+
+
+@app.errorhandler(NotFound)
+def route_index(error):
+    return index()
 
 
 if __name__ == "__main__":

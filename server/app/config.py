@@ -1,0 +1,5 @@
+DEBUG = False
+
+REGISTRY_URL = "http://localhost:5000/"
+REGISTRY_VERIFY_SSL = True
+REGISTRY_AUTHORIZATION = None

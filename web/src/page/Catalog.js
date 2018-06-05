@@ -5,6 +5,16 @@ import {withRouter, Link} from "react-router-dom";
 import image from "../image/docker.png"
 import {loadCatalog} from "../actions";
 
+const color = ["magenta", "red", "volcano", "orange", "cyan",  "gold", "lime", "green", "blue", "geekblue", "purple"];
+
+function getColor(value) {
+    let hash = 0;
+    for (let i = 0; i < value.length; i++) {
+        hash += value.charCodeAt(i);
+    }
+    return color[hash % color.length];
+}
+
 class Page extends Component {
     componentDidMount() {
         this.updateCatalog();
@@ -26,7 +36,7 @@ class Page extends Component {
             <List
                 itemLayout="horizontal"
                 loading={isFetching}
-                dataSource={repositories}
+                dataSource={repositories.filter(r => r.tags.length > 0)}
                 renderItem={item => (
                     <List.Item>
                         <List.Item.Meta
@@ -35,7 +45,7 @@ class Page extends Component {
                             description={<div>
                                 {item.tags.map((v, i) =>
                                     <Link to={`/registry/${item.name}/#${v}`} key={v + i}>
-                                        <Tag color="cyan">{v}</Tag>
+                                        <Tag color={getColor(v)}>{v}</Tag>
                                     </Link>
                                 )}
                             </div>}/>

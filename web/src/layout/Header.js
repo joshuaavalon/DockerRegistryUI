@@ -1,19 +1,36 @@
 import React from "react";
-import {Layout, Menu} from "antd";
+import {Layout, Button} from "antd";
+import {withRouter, Link} from "react-router-dom";
+import {connect} from "react-redux";
+import logo from "../logo.svg"
+import {loadCatalog, loadRepository, resetCatalog, resetRepository} from "../actions";
 
-export const Header = () => {
+export const AppHeader = ({location, dispatch}) => {
+
+    const pathSnippets = location.pathname.split("/").filter(i => i);
+    let onClick;
+    if (pathSnippets.length === 0) {
+        onClick = () => {
+            dispatch(resetCatalog());
+            dispatch(loadCatalog());
+        };
+    } else if (pathSnippets.length === 2 && pathSnippets[0] === "registry") {
+        onClick = () => {
+            dispatch(resetRepository(pathSnippets[1]));
+            dispatch(loadRepository(pathSnippets[1]));
+        };
+    } else {
+        onClick = () => {
+        };
+    }
     return (
-        <Layout.Header>
-            <div className="logo"/>
-            <Menu
-                theme="dark"
-                mode="horizontal"
-                defaultSelectedKeys={["2"]}
-                style={{lineHeight: "64px"}}>
-                <Menu.Item key="1">nav 1</Menu.Item>
-                <Menu.Item key="2">nav 2</Menu.Item>
-                <Menu.Item key="3">nav 3</Menu.Item>
-            </Menu>
+        <Layout.Header className="header">
+            <div><Link to="/"><img src={logo} alt="logo" className="logo"/></Link></div>
+            <div className="buttonBar">
+                <Button shape="circle" icon="reload" ghost={true} onClick={onClick}/>
+            </div>
         </Layout.Header>
     );
 };
+
+export const Header = withRouter(connect()(AppHeader));

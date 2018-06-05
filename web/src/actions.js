@@ -1,4 +1,5 @@
 import fetch from "cross-fetch";
+import {message} from "antd";
 
 export const FETCH_CATALOG = "FETCH_CATALOG";
 export const FETCH_CATALOG_SUCCESS = "FETCH_CATALOG_SUCCESS";
@@ -7,6 +8,14 @@ export const FETCH_CATALOG_FAILURE = "FETCH_CATALOG_FAILURE";
 export const FETCH_REPOSITORY = "FETCH_REPOSITORY";
 export const FETCH_REPOSITORY_SUCCESS = "FETCH_REPOSITORY_SUCCESS";
 export const FETCH_REPOSITORY_FAILURE = "FETCH_REPOSITORY_FAILURE";
+
+export const DELETE_IMAGE = "DELETE_IMAGE";
+export const DELETE_IMAGE_SUCCESS = "DELETE_IMAGE_SUCCESS";
+export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
+
+
+export const INVALIDATE_CATALOG = "INVALIDATE_CATALOG";
+export const INVALIDATE_REPOSITORY = "INVALIDATE_REPOSITORY";
 
 
 function fetchCatalog() {
@@ -26,6 +35,10 @@ function fetchCatalogFailure() {
     return {type: FETCH_CATALOG_FAILURE}
 }
 
+function invalidateCatalog() {
+    return {type: INVALIDATE_CATALOG}
+}
+
 function fetchRepository(name) {
     return {type: FETCH_REPOSITORY, name}
 }
@@ -43,6 +56,22 @@ function fetchRepositoryFailure(name) {
     return {type: FETCH_REPOSITORY_FAILURE, name}
 }
 
+function invalidateRepository(name) {
+    return {type: INVALIDATE_REPOSITORY, name}
+}
+
+function deleteImage(name, digest) {
+    return {type: DELETE_IMAGE, name, digest}
+}
+
+function deleteImageSuccess(name, digest) {
+    return {type: DELETE_IMAGE_SUCCESS, name, digest}
+}
+
+function deleteImageFailure(name, digest) {
+    return {type: DELETE_IMAGE_FAILURE, name, digest}
+}
+
 function shouldUpdateCatalog(state) {
     const {catalog} = state;
     if (!catalog) {
@@ -51,8 +80,7 @@ function shouldUpdateCatalog(state) {
         return false;
     } else if (!catalog.lastUpdated || (catalog.lastUpdated && catalog.lastUpdated - Date.now() > 60000)) { // 1 min
         return true;
-    }
-    else {
+    } else {
         return catalog.didInvalidate;
     }
 }
@@ -63,7 +91,7 @@ function shouldUpdateRepository(state, name) {
         return true;
     }
     const repository = repositories[name];
-    if (repository.isFetching) {
+    if (repository.isFetching || repository.isDeleting) {
         return false;
     } else if (!repository.lastUpdated || (repository.lastUpdated && repository.lastUpdated - Date.now() > 60000)) { // 1 min
         return true;
@@ -72,17 +100,29 @@ function shouldUpdateRepository(state, name) {
     }
 }
 
-export function loadCatalog(force=false) {
+function shouldRemoveImage(state, name, digest) {
+    const {repositories} = state;
+    if (!repositories || !repositories[name]) {
+        return true;
+    }
+    const repository = repositories[name];
+    return !(repository.isFetching || repository.isDeleting);
+}
+
+export function loadCatalog() {
     return (dispatch, getState) => {
-        if (force ||shouldUpdateCatalog(getState())) {
+        if (shouldUpdateCatalog(getState())) {
             dispatch(fetchCatalog());
-            return fetch("http://localhost/catalog/")
+            return fetch("/catalog/")
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
                 .then(
-                    response => {
-                        Promise.resolve(response.json())
-                            .then(json => {
-                                dispatch(fetchCatalogSuccess(json));
-                            });
+                    json => {
+                        dispatch(fetchCatalogSuccess(json));
                     },
                     error => {
                         console.log("An error occurred.", error);
@@ -95,17 +135,20 @@ export function loadCatalog(force=false) {
     }
 }
 
-export function loadRepository(name, force=false) {
+export function loadRepository(name) {
     return (dispatch, getState) => {
-        if (force || shouldUpdateRepository(getState(), name)) {
+        if (shouldUpdateRepository(getState(), name)) {
             dispatch(fetchRepository(name));
-            return fetch(`http://localhost/repository/${name}/`)
+            return fetch(`/repository/${name}/`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response.json();
+                })
                 .then(
-                    response => {
-                        Promise.resolve(response.json())
-                            .then(json => {
-                                dispatch(fetchRepositorySuccess(name, json));
-                            });
+                    json => {
+                        dispatch(fetchRepositorySuccess(name, json));
                     },
                     error => {
                         console.log("An error occurred.", error);
@@ -115,5 +158,48 @@ export function loadRepository(name, force=false) {
         } else {
             return Promise.resolve();
         }
+    }
+}
+
+export function removeImage(name, digest) {
+    return (dispatch, getState) => {
+        if (shouldRemoveImage(getState(), name, digest)) {
+            dispatch(deleteImage(name, digest));
+            return fetch(`/repository/${name}/${digest}/`, {method: "delete"})
+                .then(response => {
+                    if (!response.ok) {
+                        throw Error(response.statusText);
+                    }
+                    return response;
+                })
+                .then(
+                    response => {
+                        dispatch(deleteImageSuccess(name, digest));
+                        message.success(`Delete success: ${digest}`);
+                    },
+                    error => {
+                        console.log("An error occurred.", error);
+                        dispatch(deleteImageFailure(name, digest));
+                        message.error(`Delete failure: ${digest}`);
+                    }
+                )
+                .then(() => {
+                    dispatch(loadRepository(name));
+                })
+        } else {
+            return Promise.resolve();
+        }
+    }
+}
+
+export function resetCatalog() {
+    return (dispatch) => {
+        dispatch(invalidateCatalog());
+    }
+}
+
+export function resetRepository(name) {
+    return (dispatch) => {
+        dispatch(invalidateRepository(name));
     }
 }

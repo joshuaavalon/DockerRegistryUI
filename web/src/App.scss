@@ -1,21 +1,41 @@
 @import "~antd/dist/antd.css";
 @import "./style/layout/Footer.scss";
 @import "./style/layout/Navigation.scss";
+@import "./style/layout/Header.scss";
+@import "./style/page/Repository.scss";
 
-#root > .ant-layout {
-  min-height: 100vh;
-  .ant-layout-content {
-    margin: 0 50px;
-    display: flex;
-    flex-direction: column;
-    .content {
-      background: #fff;
-      padding: 24px;
-      flex: 1;
+#root {
+  min-width: 470px;
+  & > .ant-layout {
+    min-height: 100vh;
+    .ant-layout-content {
+      margin: 0 50px;
+      display: flex;
+      flex-direction: column;
+      .content {
+        background: #fff;
+        padding: 24px;
+        flex: 1;
+      }
     }
   }
 }
 
 .ant-list-item .ant-tag {
   margin-bottom: 8px;
+}
+
+.ant-card .ant-card-meta .digest {
+  word-wrap: break-word;
+}
+
+@font-face {
+  font-family: "anticon";
+  src: url("/font/iconFont/iconfont.eot");
+  /* IE9*/
+  src: url("/font/iconFont/iconfont.woff") format("woff"),
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url("/font/iconFont/iconfont.ttf") format("truetype"),
+    /* iOS 4.1- */
+  url("/font/iconFont/iconfont.svg#iconfont") format("svg");
 }

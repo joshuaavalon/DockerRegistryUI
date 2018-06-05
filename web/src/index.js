@@ -5,6 +5,7 @@ import App from "./App";
 import {createStore, applyMiddleware, compose} from "redux"
 import {rootReducer} from "./reducers";
 import {Provider} from "react-redux";
+import * as serviceWorker from "./serviceWorker";
 
 let composeEnhancers;
 // noinspection JSUnresolvedVariable
@@ -22,3 +23,5 @@ ReactDOM.render(
     </Provider>,
     document.getElementById("root")
 );
+
+serviceWorker.unregister();
