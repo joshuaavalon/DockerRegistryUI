@@ -1,0 +1,20 @@
+@import url(~antd/dist/antd.css);
+.ant-layout-footer {
+  text-align: center; }
+
+.breadcrumbNavigation {
+  margin: 16px 0; }
+
+#root > .ant-layout {
+  min-height: 100vh; }
+  #root > .ant-layout .ant-layout-content {
+    margin: 0 50px;
+    display: flex;
+    flex-direction: column; }
+    #root > .ant-layout .ant-layout-content .content {
+      background: #fff;
+      padding: 24px;
+      flex: 1; }
+
+.ant-list-item .ant-tag {
+  margin-bottom: 8px; }

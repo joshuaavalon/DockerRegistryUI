@@ -1,0 +1,21 @@
+@import "~antd/dist/antd.css";
+@import "./style/layout/Footer.scss";
+@import "./style/layout/Navigation.scss";
+
+#root > .ant-layout {
+  min-height: 100vh;
+  .ant-layout-content {
+    margin: 0 50px;
+    display: flex;
+    flex-direction: column;
+    .content {
+      background: #fff;
+      padding: 24px;
+      flex: 1;
+    }
+  }
+}
+
+.ant-list-item .ant-tag {
+  margin-bottom: 8px;
+}
