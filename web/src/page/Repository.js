@@ -32,7 +32,7 @@ class Page extends Component {
 
     render() {
         const {repository = {}} = this.props;
-        const {name = "", tags = []} = repository;
+        const {name = "", tags = [], isFetching, isDeleting} = repository;
         return (
             <div>
                 <h1>{name}</h1>
@@ -41,6 +41,7 @@ class Page extends Component {
                         gutter: 16,
                         xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4
                     }}
+                    loading={isFetching || isDeleting}
                     dataSource={tags}
                     renderItem={item => (
                         <List.Item>
