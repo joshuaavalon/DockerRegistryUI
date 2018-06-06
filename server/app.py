@@ -2,11 +2,11 @@ from flask import Flask, abort, jsonify
 from werkzeug.exceptions import NotFound
 
 
-from app.registry import Registry
-from app.schema import CatalogDetailSchema, RepositoryDetailSchema
+from server.registry import Registry
+from server.schema import CatalogDetailSchema, RepositoryDetailSchema
 
 app = Flask(__name__, static_url_path="")
-app.config.from_object("app.config")
+app.config.from_object("server.config")
 app.config.from_envvar("APP_CONFIG", silent=True)
 registry = Registry(base_url=app.config["REGISTRY_URL"],
                     verify_ssl=app.config["REGISTRY_VERIFY_SSL"],
