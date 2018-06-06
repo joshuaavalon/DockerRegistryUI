@@ -5,7 +5,7 @@ import {withRouter, Link} from "react-router-dom";
 import image from "../image/docker.png"
 import {loadCatalog} from "../actions";
 
-const color = ["magenta", "red", "volcano", "orange", "cyan",  "gold", "lime", "green", "blue", "geekblue", "purple"];
+const color = ["magenta", "red", "green", "geekblue", "purple"];
 
 function getColor(value) {
     let hash = 0;
