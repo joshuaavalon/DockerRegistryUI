@@ -19,3 +19,7 @@ WORKDIR /app
 RUN mkdir static && pip install -r requirements.txt
 
 COPY --from=0 /web/build /app/static
+
+COPY ./entrypoint.sh /
+
+RUN chmod +x /entrypoint.sh
