@@ -4,7 +4,7 @@ import {Layout} from "antd";
 export const Footer = () => {
     return (
         <Layout.Footer>
-            Ant Design ©2016 Created by Ant UED
+            Docker Registry UI &copy;2018 Created by Joshua Avalon
         </Layout.Footer>
     );
 };
