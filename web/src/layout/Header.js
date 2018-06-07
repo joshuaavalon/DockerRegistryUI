@@ -2,7 +2,7 @@ import React from "react";
 import {Layout, Button} from "antd";
 import {withRouter, Link} from "react-router-dom";
 import {connect} from "react-redux";
-import logo from "../logo.svg"
+import logo from "../image/docker.png"
 import {loadCatalog, loadRepository, resetCatalog, resetRepository} from "../actions";
 
 export const AppHeader = ({location, dispatch}) => {
