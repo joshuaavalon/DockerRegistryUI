@@ -1,7 +1,7 @@
 import {
     FETCH_CATALOG, FETCH_CATALOG_SUCCESS, FETCH_CATALOG_FAILURE,
     FETCH_REPOSITORY, FETCH_REPOSITORY_SUCCESS, FETCH_REPOSITORY_FAILURE,
-    DELETE_IMAGE, DELETE_IMAGE_SUCCESS, DELETE_IMAGE_FAILURE,
+    DELETE_IMAGE_SUCCESS, DELETE_IMAGE_FAILURE,
     INVALIDATE_CATALOG, INVALIDATE_REPOSITORY
 } from "./actions";
 import {combineReducers} from "redux";
@@ -32,8 +32,12 @@ function catalog(state = {
                 didInvalidate: true
             });
         case DELETE_IMAGE_SUCCESS:
+            return Object.assign({}, state, {
+                didInvalidate: true
+            });
         case FETCH_CATALOG_FAILURE:
             return Object.assign({}, state, {
+                isFetching: false,
                 didInvalidate: true
             });
         default:
@@ -46,7 +50,6 @@ function repositories(state = {}, action) {
         case FETCH_REPOSITORY:
         case FETCH_REPOSITORY_SUCCESS:
         case FETCH_REPOSITORY_FAILURE:
-        case DELETE_IMAGE:
         case DELETE_IMAGE_SUCCESS:
         case DELETE_IMAGE_FAILURE:
         case INVALIDATE_REPOSITORY:
@@ -61,7 +64,6 @@ function repositories(state = {}, action) {
 
 function images(state = {
     isFetching: false,
-    isDeleting: false,
     didInvalidate: false,
     lastUpdated: null,
     name: "",
@@ -83,23 +85,14 @@ function images(state = {
                 name, tags
             });
         case INVALIDATE_REPOSITORY:
+        case FETCH_REPOSITORY_FAILURE:
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: true
             });
-        case FETCH_REPOSITORY_FAILURE:
-            return Object.assign({}, state, {
-                didInvalidate: true
-            });
-        case DELETE_IMAGE:
-            return Object.assign({}, state, {
-                isDeleting: true,
-                didInvalidate: false
-            });
         case DELETE_IMAGE_SUCCESS:
         case DELETE_IMAGE_FAILURE:
             return Object.assign({}, state, {
-                isDeleting: false,
                 didInvalidate: true
             });
         default:

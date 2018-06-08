@@ -17,14 +17,6 @@ function getColor(value) {
 
 class Page extends Component {
     componentDidMount() {
-        this.updateCatalog();
-    }
-
-    componentDidUpdate() {
-        this.updateCatalog();
-    }
-
-    updateCatalog() {
         const {dispatch} = this.props;
         dispatch(loadCatalog());
     }

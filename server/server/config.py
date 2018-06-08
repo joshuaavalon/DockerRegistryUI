@@ -1,6 +1,6 @@
 import os
 
-DEBUG = bool(os.environ.get("DEBUG", False))
+DEBUG = os.environ.get("DEBUG", "false").lower() == "true"
 
 REGISTRY_URL = os.environ.get("REGISTRY_URL", "http://localhost:5000/")
 

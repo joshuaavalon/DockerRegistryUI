@@ -9,7 +9,6 @@ export const FETCH_REPOSITORY = "FETCH_REPOSITORY";
 export const FETCH_REPOSITORY_SUCCESS = "FETCH_REPOSITORY_SUCCESS";
 export const FETCH_REPOSITORY_FAILURE = "FETCH_REPOSITORY_FAILURE";
 
-export const DELETE_IMAGE = "DELETE_IMAGE";
 export const DELETE_IMAGE_SUCCESS = "DELETE_IMAGE_SUCCESS";
 export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
 
@@ -60,10 +59,6 @@ function invalidateRepository(name) {
     return {type: INVALIDATE_REPOSITORY, name}
 }
 
-function deleteImage(name, digest) {
-    return {type: DELETE_IMAGE, name, digest}
-}
-
 function deleteImageSuccess(name, digest) {
     return {type: DELETE_IMAGE_SUCCESS, name, digest}
 }
@@ -91,7 +86,7 @@ function shouldUpdateRepository(state, name) {
         return true;
     }
     const repository = repositories[name];
-    if (repository.isFetching || repository.isDeleting) {
+    if (repository.isFetching) {
         return false;
     } else if (!repository.lastUpdated || (repository.lastUpdated && repository.lastUpdated - Date.now() > 60000)) { // 1 min
         return true;
@@ -102,11 +97,7 @@ function shouldUpdateRepository(state, name) {
 
 function shouldRemoveImage(state, name, digest) {
     const {repositories} = state;
-    if (!repositories || !repositories[name]) {
-        return true;
-    }
-    const repository = repositories[name];
-    return !(repository.isFetching || repository.isDeleting);
+    return repositories && repositories[name];
 }
 
 export function loadCatalog() {
@@ -164,7 +155,6 @@ export function loadRepository(name) {
 export function removeImage(name, digest) {
     return (dispatch, getState) => {
         if (shouldRemoveImage(getState(), name, digest)) {
-            dispatch(deleteImage(name, digest));
             return fetch(`/repository/${name}/${digest}/`, {method: "delete"})
                 .then(response => {
                     if (!response.ok) {

@@ -17,14 +17,6 @@ class Page extends Component {
     }
 
     componentDidMount() {
-        this.updateRepository();
-    }
-
-    componentDidUpdate() {
-        this.updateRepository();
-    }
-
-    updateRepository() {
         const {name} = this.state;
         const {dispatch} = this.props;
         dispatch(loadRepository(name));
