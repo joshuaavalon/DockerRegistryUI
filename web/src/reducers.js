@@ -31,6 +31,7 @@ function catalog(state = {
                 isFetching: false,
                 didInvalidate: true
             });
+        case DELETE_IMAGE_SUCCESS:
         case FETCH_CATALOG_FAILURE:
             return Object.assign({}, state, {
                 didInvalidate: true
