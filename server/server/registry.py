@@ -56,6 +56,8 @@ class Registry:
     def delete_image(self, repository: str, digest: str) -> bool:
         url = self._get_url(f"./v2/{repository}/manifests/{digest}")
         response = self._delete(url)
+        if response.status_code == 405:
+            logger.error("Cannot delete from registry. It seems like your registry does not enable delete.")
         return response.status_code == 202
 
     def get_digest(self, repository: str, tag_or_digest: str) -> Optional[str]:
