@@ -1,8 +1,13 @@
-# DockerRegistryUI
+# Docker Registry UI
 
 Simple docker registry web UI. This is designed to work with [registry](https://hub.docker.com/r/_/registry/) v2.
 
 **Note that this is design for managing LOCAL registry. Hence, it does not have authorization functions**
+
+## Screenshot
+
+![Catalog](screenshot/001.png)
+![Registry](screenshot/002.png)
 
 ## Deploy
 ```
